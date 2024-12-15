@@ -3,6 +3,8 @@ import background from "../assets/background.png";
 import Doctor from "../assets/Doctor daddy.png"; // Add missing logo import
 import vector from "../assets/vector.png"; // Add missing vector import
 import { useNavigate } from "react-router-dom";
+import Doctor2 from "../assets/Doctor-2.png"; // Add missing logo import
+import '../App.css';
 
 function Output() {
   const [result, setresult] = useState(0);
@@ -10,7 +12,7 @@ function Output() {
   const navigate = useNavigate();
 
   const handleNavigation = () => {
-    navigate("/Output"); // Navigate to the same page, or change path accordingly
+    navigate("/"); // Navigate to the same page, or change path accordingly
   };
 
   function getresult() {
@@ -28,34 +30,31 @@ function Output() {
 
   return (
     <div
-      className="h-screen w-screen bg-cover bg-center flex items-center justify-center"
+      className="h-screen w-screen bg-cover bg-center flex flex-col justify-between items-center"
       style={{ backgroundImage: `url(${background})` }}
     >
-      <div className="flex flex-col justify-center items-center w-full h-full">
-        <img src={Doctor} alt="logo" />
-        <div className="w-full min-h-[50%] rounded-[20px] bg-white flex flex-col">
-          <h1 className="text-cyan-600 text-2xl font-bold text-center pt-6 ">
-            Risk of stroke
-          </h1>
-          <h1 className="text-cyan-600 text-6xl font-bold text-center pb-7">
-            {percentage}%
-          </h1>
-          <h2 className="text-black text-center font-semibold tracking-[0.03em]">
-            You have a {GetResultBasedOnPercentage(percentage)} risk of
-            suffering
-          </h2>
-          <h2 className="text-black text-center font-semibold tracking-[0.03em]">
-            from stroke. Seek medical
-          </h2>
-          <h2 className="text-black text-center font-semibold tracking-[0.03em]">
-            attention immediately.
-          </h2>
+      {/* Upper Div */}
+      <div className="w-full min-h-[57%] md:min-h-[50%] flex flex-col px-6 pt-12 items-center">
+        <img src={Doctor2} alt="logo" className="h-full"/>
+      </div>
 
-          <div className="flex justify-center items-center pt-8">
-            <button className="bg-cyan-600 text-white font-semibold rounded-[10px] px-8 py-2">
-              Finnish
-            </button>
-          </div>
+      {/* Lower Div */}
+      <div className="w-full min-h-[43%] md:min-h-[50%] bg-white flex flex-col items-center justify-center pt-6 md:pt-8 pb-8 px-6 shadow-2xl rounded-t-[30px] md:rounded-t-[70px]">
+        <h1 className="text-cyan-600 text-2xl md:text-3xl font-bold text-center">
+          Risk of stroke
+        </h1>
+        <h1 className="text-cyan-600 text-7xl font-bold text-center pb-4 md:pt-4">
+          {percentage}%
+        </h1>
+        <h2 className="text-black text-center font-medium tracking-[0.03em] text-lg md:text-xl">
+          You have a {GetResultBasedOnPercentage(percentage)} risk of suffering
+          from stroke. Seek medical attention immediately.
+        </h2>
+        <div className="flex justify-center items-center pt-6">
+          <button className="bg-cyan-600 text-white font-semibold rounded-[20px] px-8 md:px-12 py-2 text-xl"
+          onClick={handleNavigation}>
+            Finish
+          </button>
         </div>
       </div>
     </div>
