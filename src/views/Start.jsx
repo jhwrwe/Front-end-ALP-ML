@@ -8,6 +8,11 @@ import { useNavigate } from "react-router-dom";
 
 function Start() {
   const [count, setCount] = useState(0);
+  const navigate = useNavigate();
+
+  const handleNavigation = () => {
+    navigate("/Output"); // Navigate to the new page (e.g., "/another-page")
+  };
 
   return (
     <>
@@ -21,7 +26,10 @@ function Start() {
             S<span className="text-4xl">TROKE</span>S
             <span className="text-4xl">HIELD</span>
           </h1>
-          <div className="rounded-[20px] bg-white flex flex-nowrap  border-white">
+          <div
+            className="rounded-[20px] bg-white flex flex-nowrap  border-white"
+            onClick={handleNavigation}
+          >
             <div className="flex flex-nowrap justify-between items-center bg-cyan-600 p-4 rounded-[20px] border-2">
               <img src={vector} alt="vector1" />
               <img src={vector} alt="vector2" />
