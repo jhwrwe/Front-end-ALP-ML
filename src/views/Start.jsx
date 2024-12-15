@@ -14,7 +14,7 @@ function Start() {
   const navigate = useNavigate();
 
   const handleNavigation = () => {
-    navigate("/Output"); // Navigate to the new page (e.g., "/another-page")
+    navigate("/Question"); // Navigate to the new page (e.g., "/another-page")
   };
 
   return (
