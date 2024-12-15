@@ -5,12 +5,26 @@ import vector from "../assets/vector.png"; // Add missing vector import
 import { useNavigate } from "react-router-dom";
 
 function Output() {
-  const [count, setCount] = useState(0);
+  const [result, setresult] = useState(0);
+  const [percentage, setpercentage] = useState(76);
   const navigate = useNavigate();
 
   const handleNavigation = () => {
     navigate("/Output"); // Navigate to the same page, or change path accordingly
   };
+
+  function getresult() {
+    //masukin resultnya disini
+  }
+  function GetResultBasedOnPercentage(num) {
+    if (num > 70) {
+      return "high";
+    } else if (num <= 70 && num > 40) {
+      return "average";
+    } else {
+      return "low";
+    }
+  }
 
   return (
     <div
@@ -24,10 +38,11 @@ function Output() {
             Risk of stroke
           </h1>
           <h1 className="text-cyan-600 text-6xl font-bold text-center pb-7">
-            76%
+            {percentage}%
           </h1>
           <h2 className="text-black text-center font-semibold tracking-[0.03em]">
-            You have a high risk of suffering
+            You have a {GetResultBasedOnPercentage(percentage)} risk of
+            suffering
           </h2>
           <h2 className="text-black text-center font-semibold tracking-[0.03em]">
             from stroke. Seek medical
