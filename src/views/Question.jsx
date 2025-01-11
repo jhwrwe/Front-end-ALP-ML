@@ -13,7 +13,11 @@ function Question() {
     {
       question: "What is your gender?",
       type: "radio",
-      options: ["Male", "Female", "Other"],
+      options: [
+        { label: "Male", value: 0 },
+        { label: "Female", value: 1 },
+        { label: "Other", value: 2 },
+      ],
     },
     {
       question: "What is your age?",
@@ -23,27 +27,45 @@ function Question() {
     {
       question: "Have you ever been diagnosed with hypertension?",
       type: "radio",
-      options: ["Yes", "No"],
+      options: [
+        { label: "Yes", value: 1 },
+        { label: "No", value: 0 },
+      ],
     },
     {
       question: "Have you ever been diagnosed with heart disease?",
       type: "radio",
-      options: ["Yes", "No"],
+      options: [
+        { label: "Yes", value: 1 },
+        { label: "No", value: 0 },
+      ],
     },
     {
       question: "Have you ever been married?",
       type: "radio",
-      options: ["Yes", "No"],
+      options: [
+        { label: "Yes", value: 1 },
+        { label: "No", value: 0 },
+      ],
     },
     {
       question: "What is your occupation?",
       type: "radio",
-      options: ["Self-employed", "Private", "Government job", "Never worked", "Child"],
+      options: [
+        { label: "Self-employed", value: 0 },
+        { label: "Private", value: 1 },
+        { label: "Government job", value: 2 },
+        { label: "Never worked", value: 3 },
+        { label: "Child", value: 4 },
+      ],
     },
     {
       question: "What is your residence type?",
       type: "radio",
-      options: ["Rural", "Urban"],
+      options: [
+        { label: "Rural", value: 1 },
+        { label: "Urban", value: 0 },
+      ],
     },
     {
       question: "What is your average glucose level in blood?",
@@ -58,7 +80,12 @@ function Question() {
     {
       question: "What is your smoking status",
       type: "radio",
-      options: ["Smokes", "Formerly smoked", "Never smoked"],
+      options: [
+        { label: "Smokes", value: 0 },
+        { label: "Formerly smoked", value: 1 },
+        { label: "Never smoked", value: 2 },
+        { label: "Unknown", value: 3 },
+      ],
     },
   ];
 
@@ -73,9 +100,10 @@ function Question() {
     const { value } = event.target;
     setResponses((prevResponses) => ({
       ...prevResponses,
-      [currentQuestionIndex]: value,
+      [currentQuestionIndex]: parseInt(value), // Ensure the value is stored as a number
     }));
   };
+  
 
   // Navigate to the previous or next question
   const handleBack = () => {
@@ -90,81 +118,86 @@ function Question() {
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     } else {
-      console.log("Responses:", responses); // Debug: log the responses
-      navigate("/Output"); // Navigate to the final output page
+      console.log("Responses:", responses); // Check if responses are populated correctly
+      navigate("/Output", { state: { features: Object.values(responses) } });
     }
   };
   
   // Validation: Check if the current question has been answered
   const isNextDisabled = () => {
     const response = responses[currentQuestionIndex];
+    
+    // Check if the current question is a radio button question
     if (currentQuestion.type === "radio") {
-      return !response; // Disable if no option is selected
+      return response === undefined; // Only disable if no option is selected
     }
+  
+    // For other question types (number/text), ensure a valid input
     if (currentQuestion.type === "number" || currentQuestion.type === "text") {
-      return !response || response === ""; // Disable if input is empty
+      return response === "" || response === undefined; // Disable if empty or undefined
     }
+  
     return false; // Default to enabled
   };  
 
   return (
     <div
-      className="h-screen w-screen bg-cover bg-center flex flex-col justify-between items-center px-7 pb-24"
+      className="h-screen w-screen bg-cover bg-center flex flex-col justify-between items-center px-7 pb-24 md:pb-10"
       style={{ backgroundImage: `url(${background})` }}
     >
       {/* Upper Div */}
-      <div className="w-2/3 md:w-2/12 flex flex-col px-6 pt-12 items-center">
+      <div className="w-2/3 md:w-2/12 flex flex-col px-6 pt-12 md:pt-6 items-center">
         {/* <img src={Doctor1} alt="logo" className="h-full" /> */}
         <PreloadedImage src={Doctor1} alt="logo" className="h-full" />
       </div>
 
       {/* Lower Div */}
-      <div className="w-full min-h-[65%] md:min-h-[60%] bg-white flex flex-col pt-10 md:pt-14 pb-8 px-6 md:px-24 shadow-2xl rounded-[30px]">
+      <div className="w-full h-full bg-white flex flex-col pt-10 pb-8 md:pb-3 px-6 md:px-24 shadow-2xl rounded-[30px]">
         <h1 className="text-cyan-600 text-xl md:text-3xl font-bold text-center">
           {currentQuestion.question}
         </h1>
 
         <div className="w-full flex flex-col items-center gap-4 px-4 py-6">
-          {currentQuestion.type === "radio" &&
-            currentQuestion.options.map((option, index) => (
-              <label
-                key={index}
-                className={`flex items-center w-full md:w-2/3 px-4 py-2 border-2 rounded-lg cursor-pointer ${
-                  responses[currentQuestionIndex] === option
+        {currentQuestion.type === "radio" &&
+          currentQuestion.options.map((option, index) => (
+            <label
+              key={index}
+              className={`flex items-center w-full md:w-2/3 px-4 py-2 border-2 rounded-lg cursor-pointer ${
+                responses[currentQuestionIndex] === option.value
+                  ? "border-gray-600"
+                  : "border-gray-200"
+              }`}
+            >
+              <input
+                type="radio"
+                name={`question-${currentQuestionIndex}`}
+                value={option.value}
+                checked={responses[currentQuestionIndex] === option.value} // This should properly match
+                onChange={handleChange}
+                className="hidden"
+              />
+              <div
+                className={`w-4 h-4 border-2 rounded-full flex justify-center items-center ${
+                  responses[currentQuestionIndex] === option.value
                     ? "border-gray-600"
-                    : "border-gray-200"
+                    : "border-gray-400"
                 }`}
               >
-                <input
-                  type="radio"
-                  name={`question-${currentQuestionIndex}`}
-                  value={option}
-                  checked={responses[currentQuestionIndex] === option}
-                  onChange={handleChange}
-                  className="hidden"
-                />
-                <div
-                  className={`w-4 h-4 border-2 rounded-full flex justify-center items-center ${
-                    responses[currentQuestionIndex] === option
-                      ? "border-gray-600"
-                      : "border-gray-400"
-                  }`}
-                >
-                  {responses[currentQuestionIndex] === option && (
-                    <div className="w-2 h-2 bg-gray-600 rounded-full"></div>
-                  )}
-                </div>
-                <span
-                  className={`ml-4 text-md font-bold ${
-                    responses[currentQuestionIndex] === option
-                      ? "text-gray-700"
-                      : "text-gray-500"
-                  }`}
-                >
-                  {option}
-                </span>
-              </label>
-            ))}
+                {responses[currentQuestionIndex] === option.value && (
+                  <div className="w-2 h-2 bg-gray-600 rounded-full"></div>
+                )}
+              </div>
+              <span
+                className={`ml-4 text-md font-bold ${
+                  responses[currentQuestionIndex] === option.value
+                    ? "text-gray-700"
+                    : "text-gray-500"
+                }`}
+              >
+                {option.label} {/* Render the label text */}
+              </span>
+            </label>
+          ))}
 
           {currentQuestion.type === "number" && (
             <input
