@@ -4,6 +4,7 @@ import Doctor from "../assets/Doctor daddy.png"; // Add missing logo import
 import vector from "../assets/vector.png"; // Add missing vector import
 import { useNavigate } from "react-router-dom";
 import Doctor2 from "../assets/Doctor-2.png"; // Add missing logo import
+import PreloadedImage from "../components/PreloadedImage";
 import '../App.css';
 
 function Output() {
@@ -35,7 +36,8 @@ function Output() {
     >
       {/* Upper Div */}
       <div className="w-full min-h-[57%] md:min-h-[50%] flex flex-col px-6 pt-12 items-center">
-        <img src={Doctor2} alt="logo" className="h-full"/>
+        {/* <img src={Doctor2} alt="logo" className="h-full"/> */}
+        <PreloadedImage src={Doctor2} alt="logo" className="h-full" />
       </div>
 
       {/* Lower Div */}

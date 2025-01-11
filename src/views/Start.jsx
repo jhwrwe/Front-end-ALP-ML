@@ -6,6 +6,7 @@ import logo from "../assets/Doctor-0.png";
 import vector from "../assets/vector.png";
 import { useNavigate } from "react-router-dom";
 import '../App.css';
+import PreloadedImage from "../components/PreloadedImage";
 import React from 'react';
 import Draggable from 'react-draggable';
 
@@ -24,7 +25,8 @@ function Start() {
         style={{ backgroundImage: `url(${background})` }}
       >
         <div className="content-center px-6 md:px-24">
-          <img src={logo} alt="logo" className="w-full md:w-2/5 mx-auto" />
+          {/* <img src={logo} alt="logo" className="w-full md:w-2/5 mx-auto" /> */}
+          <PreloadedImage src={logo} alt="logo" className="w-full md:w-2/5 mx-auto"  />
           <h1 className="text-5xl md:text-6xl font-bold text-cyan-600 pb-4 md:pb-6 tracking-[0.03em] text-center">
             S<span className="text-4xl">TROKE</span>S
             <span className="text-4xl">HIELD</span>
