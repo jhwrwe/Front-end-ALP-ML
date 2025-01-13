@@ -89,28 +89,24 @@ function Question() {
     },
   ];
 
-  // State to track current question index and responses
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [responses, setResponses] = useState({});
 
   const currentQuestion = questions[currentQuestionIndex];
 
-  // Handle changes in input values
   const handleChange = (event) => {
     const { value } = event.target;
     setResponses((prevResponses) => ({
       ...prevResponses,
-      [currentQuestionIndex]: parseInt(value), // Ensure the value is stored as a number
+      [currentQuestionIndex]: parseInt(value),
     }));
   };
-  
 
-  // Navigate to the previous or next question
   const handleBack = () => {
     if (currentQuestionIndex > 0) {
       setCurrentQuestionIndex(currentQuestionIndex - 1);
     } else {
-      navigate("/"); // Navigate to the initial page
+      navigate("/");
     }
   };
 
@@ -118,87 +114,96 @@ function Question() {
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     } else {
-      console.log("Responses:", responses); // Check if responses are populated correctly
-      navigate("/Output", { state: { features: Object.values(responses) } });
+      const formattedResponses = formatResponses();
+      console.log("Formatted Responses:", formattedResponses);
+      navigate("/Output", { state: { features: formattedResponses } });
     }
   };
-  
-  // Validation: Check if the current question has been answered
+
+  const formatResponses = () => {
+    const features = [];
+
+    questions.forEach((question, index) => {
+      const response = responses[index];
+      if (question.question === "What is your smoking status" || question.question === "What is your occupation?") {
+        const optionsLength = question.options.length;
+        const expandedResponse = Array(optionsLength).fill(0);
+        if (response !== undefined) {
+          expandedResponse[response] = 1;
+        }
+        features.push(...expandedResponse);
+      } else {
+        features.push(response !== undefined ? response : 0);
+      }
+    });
+
+    return [features];
+  };
+
   const isNextDisabled = () => {
     const response = responses[currentQuestionIndex];
-    
-    // Check if the current question is a radio button question
     if (currentQuestion.type === "radio") {
-      return response === undefined; // Only disable if no option is selected
+      return response === undefined;
     }
-  
-    // For other question types (number/text), ensure a valid input
     if (currentQuestion.type === "number" || currentQuestion.type === "text") {
-      return response === "" || response === undefined; // Disable if empty or undefined
+      return response === "" || response === undefined;
     }
-  
-    return false; // Default to enabled
-  };  
+    return false;
+  };
 
   return (
     <div
-      className="h-screen w-screen bg-cover bg-center flex flex-col justify-between items-center px-7 pb-24 md:pb-10"
+      className="min-h-screen w-screen bg-cover bg-center flex flex-col justify-between items-center px-7 pb-24 md:pb-10"
       style={{ backgroundImage: `url(${background})` }}
     >
-      {/* Upper Div */}
       <div className="w-2/3 md:w-2/12 flex flex-col px-6 pt-12 md:pt-6 items-center">
-        {/* <img src={Doctor1} alt="logo" className="h-full" /> */}
         <PreloadedImage src={Doctor1} alt="logo" className="h-full" />
       </div>
-
-      {/* Lower Div */}
-      <div className="w-full h-full bg-white flex flex-col pt-10 pb-8 md:pb-3 px-6 md:px-24 shadow-2xl rounded-[30px]">
+      <div className="w-full h-full bg-white flex flex-col pt-10 pb-8 md:pb-3 px-6 md:px-24 shadow-2xl rounded-[30px] space-y-0 flex-grow">
         <h1 className="text-cyan-600 text-xl md:text-3xl font-bold text-center">
           {currentQuestion.question}
         </h1>
-
         <div className="w-full flex flex-col items-center gap-4 px-4 py-6">
-        {currentQuestion.type === "radio" &&
-          currentQuestion.options.map((option, index) => (
-            <label
-              key={index}
-              className={`flex items-center w-full md:w-2/3 px-4 py-2 border-2 rounded-lg cursor-pointer ${
-                responses[currentQuestionIndex] === option.value
-                  ? "border-gray-600"
-                  : "border-gray-200"
-              }`}
-            >
-              <input
-                type="radio"
-                name={`question-${currentQuestionIndex}`}
-                value={option.value}
-                checked={responses[currentQuestionIndex] === option.value} // This should properly match
-                onChange={handleChange}
-                className="hidden"
-              />
-              <div
-                className={`w-4 h-4 border-2 rounded-full flex justify-center items-center ${
+          {currentQuestion.type === "radio" &&
+            currentQuestion.options.map((option, index) => (
+              <label
+                key={index}
+                className={`flex items-center w-full md:w-2/3 px-4 py-2 border-2 rounded-lg cursor-pointer ${
                   responses[currentQuestionIndex] === option.value
                     ? "border-gray-600"
-                    : "border-gray-400"
+                    : "border-gray-200"
                 }`}
               >
-                {responses[currentQuestionIndex] === option.value && (
-                  <div className="w-2 h-2 bg-gray-600 rounded-full"></div>
-                )}
-              </div>
-              <span
-                className={`ml-4 text-md font-bold ${
-                  responses[currentQuestionIndex] === option.value
-                    ? "text-gray-700"
-                    : "text-gray-500"
-                }`}
-              >
-                {option.label} {/* Render the label text */}
-              </span>
-            </label>
-          ))}
-
+                <input
+                  type="radio"
+                  name={`question-${currentQuestionIndex}`}
+                  value={option.value}
+                  checked={responses[currentQuestionIndex] === option.value}
+                  onChange={handleChange}
+                  className="hidden"
+                />
+                <div
+                  className={`w-4 h-4 border-2 rounded-full flex justify-center items-center ${
+                    responses[currentQuestionIndex] === option.value
+                      ? "border-gray-600"
+                      : "border-gray-400"
+                  }`}
+                >
+                  {responses[currentQuestionIndex] === option.value && (
+                    <div className="w-2 h-2 bg-gray-600 rounded-full"></div>
+                  )}
+                </div>
+                <span
+                  className={`ml-4 text-md font-bold ${
+                    responses[currentQuestionIndex] === option.value
+                      ? "text-gray-700"
+                      : "text-gray-500"
+                  }`}
+                >
+                  {option.label}
+                </span>
+              </label>
+            ))}
           {currentQuestion.type === "number" && (
             <input
               type="number"
@@ -208,7 +213,6 @@ function Question() {
               className="w-full md:w-2/3 px-4 py-2 border-2 border-gray-300 rounded-lg"
             />
           )}
-
           {currentQuestion.type === "text" && (
             <input
               type="text"
@@ -219,9 +223,7 @@ function Question() {
             />
           )}
         </div>
-
         <div className="flex-grow md:flex-col"></div>
-
         <div className="flex flex-row items-center justify-center gap-x-1.5">
           <div className="flex justify-center items-center">
             <button
@@ -233,14 +235,14 @@ function Question() {
           </div>
           <div className="flex justify-center items-center">
             <button
-                className={`bg-cyan-600 text-white font-semibold rounded-[20px] px-10 md:px-12 py-2 md:py-4 text-lg md:text-xl ${
-                  isNextDisabled() ? "opacity-50 cursor-not-allowed" : ""
-                }`}
-                onClick={handleNext}
-                disabled={isNextDisabled()}
-              >
-                Next
-              </button>
+              className={`bg-cyan-600 text-white font-semibold rounded-[20px] px-10 md:px-12 py-2 md:py-4 text-lg md:text-xl ${
+                isNextDisabled() ? "opacity-50 cursor-not-allowed" : ""
+              }`}
+              onClick={handleNext}
+              disabled={isNextDisabled()}
+            >
+              Next
+            </button>
           </div>
         </div>
       </div>

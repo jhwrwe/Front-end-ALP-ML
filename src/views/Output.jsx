@@ -38,9 +38,19 @@ function Output() {
     if (num > 70) {
       return "high";
     } else if (num > 40) {
-      return "average";
+      return "medium";
     } else {
       return "low";
+    }
+  }
+
+  function getAdvice(riskLevel) {
+    if (riskLevel =="high") {
+      return "Seek medical attention immediately.";
+    } else if (riskLevel == "medium") {
+      return "Consider adopting a healthier lifestyle with regular exercise and a balanced diet";
+    } else {
+      return "Continue maintaining a healthy lifestyle with a balanced diet and regular exercise";
     }
   }
 
@@ -65,7 +75,7 @@ function Output() {
               {percentage}%
             </h1>
             <h2 className="text-black text-center font-medium tracking-[0.03em] text-lg md:text-xl">
-              You have a {getRiskLevel(percentage)} risk of suffering from stroke. Seek medical attention immediately.
+              You have a {getRiskLevel(parseFloat(percentage))} risk of suffering from stroke. {getAdvice(getRiskLevel(parseFloat(percentage)))}
             </h2>
           </>
         ) : (
